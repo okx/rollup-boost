@@ -49,3 +49,7 @@ fmt: ## Format the code
 	cargo fmt
 	cargo fix --allow-staged
 	cargo clippy --features "$(FEATURES)" --fix --allow-staged
+
+xlayer:
+	cp .github/scripts/pre-commit-xlayer .git/hooks/pre-commit && \
+	chmod +x .git/hooks/pre-commit
