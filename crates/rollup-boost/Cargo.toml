@@ -1,8 +1,11 @@
 [package]
 name = "rollup-boost"
-version = "0.1.0"
+version = "0.7.12"
 edition = "2024"
+description = "Rollup Boost is a sidecar for optimism rollups that enables rollup extensions"
+rust-version = "1.85"
 license = "MIT"
+readme = "../../README.md"
 
 [dependencies]
 tracing.workspace = true
@@ -17,8 +20,8 @@ tokio.workspace = true
 eyre.workspace = true
 url.workspace = true
 sha2.workspace = true
+moka = { workspace = true, features = ["future"] }
 
-reth-optimism-payload-builder.workspace = true
 op-alloy-rpc-types-engine.workspace = true
 alloy-rpc-types-engine.workspace = true
 alloy-rpc-types-eth.workspace = true
@@ -28,14 +31,7 @@ alloy-serde.workspace = true
 tokio-tungstenite.workspace = true
 metrics-derive.workspace = true
 
-# TODO: update to latest release when it is published
-# jsonrpsee = { version = "0.25.1", features = ["server", "http-client", "macros"] }
-jsonrpsee = { git = "https://github.com/paritytech/jsonrpsee", rev = "f04afa740e55db60dce20d9839758792f035ffff", features = [
-    "server",
-    "http-client",
-    "macros",
-] }
-moka = { version = "0.12.10", features = ["future"] }
+jsonrpsee = { workspace = true, features = ["server", "http-client", "macros"] }
 http = "1.1.0"
 dotenvy = "0.15.7"
 tower = { version = "0.5.2", features = ["timeout"] }

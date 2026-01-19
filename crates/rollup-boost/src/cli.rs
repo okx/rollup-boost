@@ -4,9 +4,9 @@ use std::{net::SocketAddr, path::PathBuf};
 use tokio::signal::unix::{SignalKind, signal as unix_signal};
 use tracing::{Level, info};
 
+use crate::payload::PayloadSource;
 use crate::{
-    BlockSelectionPolicy, ClientArgs, DebugServer, FlashblocksArgs, PayloadSource, ProxyLayer,
-    RollupBoostServer,
+    BlockSelectionPolicy, ClientArgs, DebugServer, FlashblocksArgs, ProxyLayer, RollupBoostServer,
     client::rpc::{BuilderArgs, L2ClientArgs},
     debug_api::ExecutionMode,
     get_version, init_metrics,
@@ -142,8 +142,6 @@ impl RollupBoostServiceArgs {
         };
 
         // Build and start the server
-        info!("Starting server on :{}", self.rpc_port);
-
         let http_middleware =
             tower::ServiceBuilder::new()
                 .layer(probe_layer)
@@ -156,6 +154,10 @@ impl RollupBoostServiceArgs {
             .set_http_middleware(http_middleware)
             .build(format!("{}:{}", self.rpc_host, self.rpc_port).parse::<SocketAddr>()?)
             .await?;
+
+        let local_addr = server.local_addr()?;
+        info!("Starting server on {}", local_addr);
+
         let handle = server.start(rpc_module);
 
         let stop_handle = handle.clone();
