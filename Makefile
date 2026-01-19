@@ -53,3 +53,6 @@ fmt: ## Format the code
 xlayer:
 	cp .github/scripts/pre-commit-xlayer .git/hooks/pre-commit && \
 	chmod +x .git/hooks/pre-commit
+
+build-docker:
+	docker build -t rollup-boost:latest -f Dockerfile.xlayer .
