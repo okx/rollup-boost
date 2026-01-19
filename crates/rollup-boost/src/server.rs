@@ -1,4 +1,8 @@
 use crate::debug_api::ExecutionMode;
+use crate::payload::{
+    NewPayload, NewPayloadV3, NewPayloadV4, OpExecutionPayloadEnvelope, PayloadSource,
+    PayloadTraceContext, PayloadVersion,
+};
 use crate::{
     BlockSelectionPolicy, ClientArgs, EngineApiExt, Flashblocks, FlashblocksService,
     RollupBoostLibArgs, update_execution_mode_gauge,
@@ -6,10 +10,6 @@ use crate::{
 use crate::{
     client::rpc::RpcClient,
     health::HealthHandle,
-    payload::{
-        NewPayload, NewPayloadV3, NewPayloadV4, OpExecutionPayloadEnvelope, PayloadSource,
-        PayloadTraceContext, PayloadVersion,
-    },
     probe::{Health, Probes},
 };
 use alloy_primitives::{B256, Bytes, bytes};
@@ -163,6 +163,10 @@ impl<T: EngineApiExt> RollupBoostServer<T> {
         }
     }
 
+    pub fn probes(&self) -> Arc<Probes> {
+        self.probes.clone()
+    }
+
     pub fn spawn_health_check(
         &self,
         health_check_interval: u64,
@@ -178,6 +182,14 @@ impl<T: EngineApiExt> RollupBoostServer<T> {
         );
 
         handle.spawn()
+    }
+
+    pub fn set_execution_mode(&self, execution_mode: ExecutionMode) {
+        *self.execution_mode.lock() = execution_mode;
+    }
+
+    pub fn get_execution_mode(&self) -> ExecutionMode {
+        *self.execution_mode.lock()
     }
 
     async fn new_payload(&self, new_payload: NewPayload) -> RpcResult<PayloadStatus> {
@@ -424,6 +436,7 @@ impl<T: EngineApiExt> RollupBoostServer<T> {
                     debug!(
                         message = "received new state root payload from l2",
                         payload = ?new_payload,
+                        builder_payload = ?builder_payload,
                     );
                     return Ok(Some(new_payload));
                 }

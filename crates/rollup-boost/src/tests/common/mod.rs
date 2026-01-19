@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 use crate::DebugClient;
+use crate::EngineApiClient;
+use crate::payload::{NewPayload, OpExecutionPayloadEnvelope, PayloadSource, PayloadVersion};
 use crate::{AuthLayer, AuthService};
-use crate::{EngineApiClient, OpExecutionPayloadEnvelope, PayloadVersion};
-use crate::{NewPayload, PayloadSource};
 use alloy_eips::Encodable2718;
 use alloy_primitives::{B256, Bytes, TxKind, U256, address, hex};
 use alloy_rpc_types_engine::{ExecutionPayload, JwtSecret};
